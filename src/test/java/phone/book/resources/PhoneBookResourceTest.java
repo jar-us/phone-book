@@ -9,9 +9,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import phone.book.URI;
 import phone.book.model.PhoneNumberDetails;
 import phone.book.service.PhoneBookService;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,16 +35,52 @@ public class PhoneBookResourceTest {
 
     @BeforeEach
     public void setup() {
-        builder = MockMvcRequestBuilders.get("/phone-number-details").accept(MediaType.APPLICATION_JSON);
     }
 
     @Test
-    public void phone_number_details() throws Exception {
+    public void test_add_phone_details() throws Exception {
 
-        PhoneNumberDetails phoneNumberDetails = new PhoneNumberDetails(123, "Suraj");
-        when(phoneBookService.getPhoneNumberDetails()).thenReturn(phoneNumberDetails);
+        PhoneNumberDetails phoneNumberDetails1 = new PhoneNumberDetails(4, "HelloWorld");
+        String request = "{\"phoneNumber\":4,\"name\":\"HelloWorld\"}";
 
-        String expectedResponse = "{\"phoneNumber\": 123,\"name\":\"Suraj\"}";
+        builder = MockMvcRequestBuilders.post(URI.ADD_PHONE_DETAILS.toString()).content(request).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
+
+        String expectedResponse = "{\"phoneNumber\":4,\"name\":\"HelloWorld\"}";
+        when(phoneBookService.addPhoneNumberWithDetails(any(PhoneNumberDetails.class))).thenReturn(phoneNumberDetails1);
+
+        mockMvc.perform(builder).andExpect(status().isOk()).andExpect(content().string(expectedResponse));
+    }
+
+    @Test
+    public void test_get_phone_details_by_number() throws Exception {
+
+        PhoneNumberDetails phoneNumberDetails1 = new PhoneNumberDetails(1, "Amit");
+
+        builder = MockMvcRequestBuilders.get(URI.GET_PHONE_DETAILS_BY_NUMBER.toString()).accept(MediaType.APPLICATION_JSON);
+
+        when(phoneBookService.getDetailsByPhoneNumber(anyInt())).thenReturn(phoneNumberDetails1);
+
+        String expectedResponse = "{\"phoneNumber\":1,\"name\":\"Amit\"}";
+
+        mockMvc.perform(builder).andExpect(status().isOk()).andExpect(content().json(expectedResponse));
+    }
+
+    @Test
+    public void test_get_all_phone_numbers_with_details() throws Exception {
+
+        PhoneNumberDetails phoneNumberDetails1 = new PhoneNumberDetails(1, "Amit");
+        PhoneNumberDetails phoneNumberDetails2 = new PhoneNumberDetails(2, "Suraj");
+        PhoneNumberDetails phoneNumberDetails3 = new PhoneNumberDetails(3, "Sumit");
+
+        List<PhoneNumberDetails> phoneNumberDetails = Arrays.asList(phoneNumberDetails1, phoneNumberDetails2, phoneNumberDetails3);
+
+        builder = MockMvcRequestBuilders.get(URI.GET_ALL_PHONE_DETAILS.toString()).accept(MediaType.APPLICATION_JSON);
+
+        when(phoneBookService.getAllPhoneNumberWithDetails()).thenReturn(phoneNumberDetails);
+
+        String expectedResponse = "[{\"phoneNumber\":1,\"name\":\"Amit\"},{\"phoneNumber\":2,\"name\":\"Suraj\"},{\"phoneNumber\":3,\"name\":\"Sumit\"}]";
+
         mockMvc.perform(builder).andExpect(status().isOk()).andExpect(content().json(expectedResponse));
     }
 }
+

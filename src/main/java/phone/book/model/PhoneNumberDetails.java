@@ -15,7 +15,6 @@ public class PhoneNumberDetails {
     private Integer phoneNumber;
     private String name;
 
-
     public PhoneNumberDetails() {
     }
 
