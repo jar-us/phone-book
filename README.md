@@ -11,3 +11,17 @@
 
 # Useful links :
 ##### Testing the Web Layer : https://spring.io/guides/gs/testing-web/
+
+##### Intellij setup for testing : https://www.jetbrains.com/help/idea/testing.html
+
+##### JUNIT 5 : https://junit.org/junit5/docs/current/user-guide/
+
+##### AssertJ : https://joel-costigliola.github.io/assertj/
+
+##### Mockito : https://github.com/mockito/mockito
+
+##### JSONPath : https://github.com/json-path/JsonPath
+
+# Good Unit Testing :
+##### Patterns : http://xunitpatterns.com/
+##### How to write good unit tests : https://github.com/mockito/mockito/wiki/How-to-write-good-tests
